@@ -2,23 +2,42 @@ package com.abc;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
+/**
+ * 
+ * @author Sandeep Srivastava
+ *
+ */
 public class Bank {
+	Logger logger = Logger.getLogger(Bank.class.getName());
     private List<Customer> customers;
 
+    /**
+     * Constructor to initialize customers ArrayList
+     */
     public Bank() {
         customers = new ArrayList<Customer>();
     }
 
+    /**
+     * 
+     * @param customer, not null
+     */
     public void addCustomer(Customer customer) {
-        customers.add(customer);
+        this.getCustomers().add(customer);
     }
 
+    /**
+     * 
+     * @return String
+     */
     public String customerSummary() {
-        String summary = "Customer Summary";
-        for (Customer c : customers)
-            summary += "\n - " + c.getName() + " (" + format(c.getNumberOfAccounts(), "account") + ")";
-        return summary;
+        StringBuilder summary = new StringBuilder("Customer Summary");
+        for (Customer c : this.getCustomers())
+            summary.append("\n - " + c.getName() + " (" + format(c.getNumberOfAccounts(), "account") + ")");
+        return summary.toString();
     }
 
     //Make sure correct plural of word is created based on the number passed in:
@@ -26,21 +45,32 @@ public class Bank {
     private String format(int number, String word) {
         return number + " " + (number == 1 ? word : word + "s");
     }
-
+    /**
+     * 
+     * @return double
+     */
     public double totalInterestPaid() {
         double total = 0;
-        for(Customer c: customers)
+        for(Customer c: this.getCustomers())
             total += c.totalInterestEarned();
         return total;
     }
 
     public String getFirstCustomer() {
         try {
-            customers = null;
-            return customers.get(0).getName();
-        } catch (Exception e){
-            e.printStackTrace();
-            return "Error";
+            return this.getCustomers().get(0).getName();
+        } catch (NullPointerException e){
+        	logger.log(Level.SEVERE, "NullPointerException", e);
+        	return "Error"; 
         }
     }
+	public List<Customer> getCustomers() {
+		return customers;
+	}
+
+	public void setCustomers(List<Customer> customers) {
+		this.customers = customers;
+	}
+    
+    
 }
